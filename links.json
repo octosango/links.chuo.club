@@ -108,5 +108,59 @@
         "no-login"
       ]
     }
+  ],
+  "categories": [
+    {
+      "name": "university",
+      "description": "中央大学のサービス"
+    },
+    {
+      "name": "no-login",
+      "description": "ログイン不要（一部ページは必要）"
+    },
+    {
+      "name": "tougou-account",
+      "description": "統合認証アカウントが必要"
+    },
+    {
+      "name": "sso",
+      "description": "SSOログインが可能"
+    },
+    {
+      "name": "info",
+      "description": "大学の情報"
+    },
+    {
+      "name": "study",
+      "description": "学習に関するサービス"
+    },
+    {
+      "name": "google",
+      "description": "Googleのサービス"
+    },
+    {
+      "name": "microsoft",
+      "description": "Microsoftのサービス"
+    },
+    {
+      "name": "mizphses",
+      "description": "mizphsesのサービス"
+    },
+    {
+      "name": "email",
+      "description": "メールサービス"
+    },
+    {
+      "name": "office",
+      "description": "Office"
+    },
+    {
+      "name": "g.chuo-u.ac.jp",
+      "description": "g.chuo-u.ac.jp（Googleログイン）"
+    },
+    {
+      "name": "m.chuo-u.ac.jp",
+      "description": "m.chuo-u.ac.jpのサービス（MSログイン）"
+    }
   ]
 }

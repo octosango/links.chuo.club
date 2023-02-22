@@ -16,11 +16,46 @@
       <h1>Links Portal</h1>
       <div>
         <a href="./index.html">ホーム</a>
-        <a href="./about.html">概要</a>
         <a href="https://github.com/mizphses/links.chuo.club">GitHub</a>
       </div>
     </div>
-    <h1>My Site</h1>
-    <p>Welcome to my site!</p>
+    <div class="app">
+      <div>
+        <h2>このサイトについて</h2>
+        <p>このサイトはmizphsesが選んだ，とりあえずブックマークしておいた方がいい大学のサイト一覧です。</p>
+      </div>
+      <div id="app">
+      </div>
+    </div>
+    <script>
+      fetch('https://raw.githubusercontent.com/mizphses/links.chuo.club/main/links.json')
+        .then(response => response.json())
+        .then(data => {
+          const app = Vue.createApp({
+            data() {
+              return {
+                links: data.sites
+              }
+            },
+            template: `
+             <div class="buttons">
+                <button v-for="link in links" class="button" :class="link.category" @click="filter(link.category)">{{ link.category }}</button>
+              </div>
+              <div class="links">
+                <div v-for="link in links" class="link">
+                  <a :href="link.url" target="_blank" rel="noopener noreferrer">
+                    <div class="link-box">
+                      <div class="link__title">{{ link.name }}</div>
+                      <div class="page">{{ link.url }}</div>
+                      <div class="link__description">{{ link.description }}</div>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            `
+          })
+          app.mount('#app')
+        })
+    </script>
   </body>
 </html>

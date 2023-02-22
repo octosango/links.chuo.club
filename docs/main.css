@@ -16,3 +16,54 @@ body{
     justify-content: space-between;
     padding: 0 20px;
 }
+
+.app {
+    margin: 1rem;
+}
+
+.links{
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    grid-gap: 10px;
+}
+
+.link {
+    text-decoration: none;
+    color: #333;
+    font-size: 16px;
+    font-weight: 500;
+    margin: 0 10px;
+    padding: 1.3rem;
+    background-color: #ffffff;
+    border-radius: 10;
+    transition: all 0.3s ease;
+}
+
+.link:hover{
+    background-color: #d5ff8d;
+}
+
+@media (min-width: 768px) {
+    .links{
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+a{
+    text-decoration: none;
+}
+
+.link__title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    border-radius: 10;
+    transition: all 0.3s ease;
+    color: #555;
+}
+.link__description{
+    font-size: 1rem;
+    font-weight: 400;
+    border-radius: 10;
+    transition: all 0.3s ease;
+    color: #555;
+}
