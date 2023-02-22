@@ -1,0 +1,112 @@
+{
+  "sites": [
+    {
+      "name": "manaba",
+      "url": "http://room.chuo-u.ac.jp/",
+      "description": "大学のManaba（課題の提示や授業資料，シラバスなどが載っているLMS）です。このリンクだと直接トップページに進めます。",
+      "category": [
+        "university",
+        "study",
+        "sso",
+        "tougou-account"
+      ]
+    },
+    {
+      "name": "C Plus",
+      "url": "https://cplus.chuo-u.ac.jp/",
+      "description": "お知らせの確認，履修登録，成績照会，試験教室の確認，住所などの登録に使います。ログインID・パスワードは統合認証と同じですが，SSOではない（自動ログイン不可）なので注意してください。",
+      "category": [
+        "university",
+        "study",
+        "tougou-account",
+        "info"
+      ]
+    },
+    {
+      "name": "大学公式サイト",
+      "url": "https://www.chuo-u.ac.jp/",
+      "description": "大学の公式サイトです。大学の概要や学部・学科の紹介などが載っています。",
+      "category": [
+        "university",
+        "no-login",
+        "info"
+      ]
+    },
+    {
+      "name": "大学図書館",
+      "url": "https://www.chuo-u.ac.jp/library/",
+      "description": "大学図書館の公式サイトです。図書館の概要や図書館の利用方法などが載っています。",
+      "category": [
+        "university",
+        "no-login",
+        "study",
+        "info"
+      ]
+    },
+    {
+      "name": "大学図書館OPAC",
+      "url": "https://opac.chuo-u.ac.jp/",
+      "description": "大学図書館のOPACです。図書館の蔵書を検索できます。",
+      "category": [
+        "university",
+        "no-login",
+        "tougou-account"
+      ]
+    },
+    {
+      "name": "大学図書館データベースサイト",
+      "url": "https://www.chuo-u.ac.jp/library/database/",
+      "description": "大学図書館のデータベースサイトです。百科事典（電子），判例集，新聞・雑誌記事，企業情報などを閲覧できます。一部のサービスの利用には統合認証アカウントでのログインやSSL-VPNの利用が必要です。",
+      "category": [
+        "university",
+        "no-login",
+        "tougou-account",
+        "study"
+      ]
+    },
+    {
+      "name": "統合認証アカウントの確認・パスワード変更サイト",
+      "url": "https://pw.net.chuo-u.ac.jp/webmtn/LoginServlet",
+      "description": "統合認証アカウントの確認・パスワード変更サイトです。統合認証アカウントに紐づく大学のメールアドレスの確認やパスワードの変更ができます。",
+      "category": [
+        "university",
+        "tougou-account"
+      ]
+    },
+    {
+      "name": "全学メール（Gmail）",
+      "url": "https://mail.google.com/a/g.chuo-u.ac.jp",
+      "description": "統合認証アカウントの確認・パスワード変更サイトです。統合認証アカウントに紐づく大学のメールアドレスの確認やパスワードの変更ができます。",
+      "category": [
+        "google",
+        "tougou-account",
+        "sso",
+        "g.chuo-u.ac.jp",
+        "email",
+        "office"
+      ]
+    },
+    {
+      "name": "Office",
+      "url": "https://www.office.com/",
+      "description": "Microsoft Officeです。中大の学費にOfficeが含まれています。※ログインはm系のメールアドレスで行います。詳細は下記リンクを参照！",
+      "category": [
+        "microsoft",
+        "tougou-account",
+        "sso",
+        "m.chuo-u.ac.jp",
+        "email",
+        "office"
+      ]
+    },
+    {
+      "name": "Links",
+      "url": "https://links.chuo.club/",
+      "description": "このサイトです。中大生のためのリンク集です。中大生が利用できる，学生生活で便利なリンクとかを載せてます。一部は使い方も載せてます。",
+      "category": [
+        "mizphses",
+        "no-login"
+      ]
+    }
+  ]
+}
