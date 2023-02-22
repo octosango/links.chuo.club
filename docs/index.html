@@ -73,12 +73,7 @@
                 this.category_visible = !this.category_visible
               },
               show_all(){
-                fetch('https://raw.githubusercontent.com/mizphses/links.chuo.club/main/links.json')
-                  .then(response => response.json())
-                  .then(data => {
-                    this.links = data
-                    this.clicked_buttons = []
-                  })
+                location.reload()
               }
             }
             ,
