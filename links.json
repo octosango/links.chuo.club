@@ -76,7 +76,7 @@
     {
       "name": "全学メール（Gmail）",
       "url": "https://mail.google.com/a/g.chuo-u.ac.jp",
-      "description": "統合認証アカウントの確認・パスワード変更サイトです。統合認証アカウントに紐づく大学のメールアドレスの確認やパスワードの変更ができます。",
+      "description": "GmailとGoogle Workspacesが使えます。",
       "category": [
         "google",
         "tougou-account",
