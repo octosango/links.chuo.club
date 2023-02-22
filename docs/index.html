@@ -1,14 +1,30 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Links</title>
+    <title>CLink</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:title" content="CLink">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://links.chuo.club">
+    <meta property="og:image" content="https://links.chuo.club/ogp.png">
+    <meta property="og:site_name" content="CLink">
+    <meta property="og:description" content="中央大学で便利なリンクをまとめたポータルサイト">
+    <meta property="og:locale" content="ja_JP">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@mizphses">
+    <meta name="twitter:creator" content="@mizphses">
+    <meta name="twitter:title" content="CLink">
+    <meta name="twitter:description" content="中央大学で便利なリンクをまとめたポータルサイト">
+    <meta name="twitter:image" content="https://links.chuo.club/ogp.png">
+    <meta name="twitter:image:alt" content="CLink">
+    <meta name="description" content="Links Portal">
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w==" crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.47/vue.global.min.js" integrity="sha512-DJ2+sosWB5FnZAIeCWAHu2gxQ7Gi438oOZLcBQSOrW8gD0s7LIXDv/5RW76B3FcljF40BXnfqNIo6Dhp7dFHJg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <link rel="stylesheet" href="./main.css">
   </head>
   <body>
@@ -34,22 +50,83 @@
           const app = Vue.createApp({
             data() {
               return {
-                links: data.sites
+                links: data,
+                clicked_buttons: [],
+                category_visible: false,
               }
             },
+            methods: {
+              filter_category(category) {
+                if (category === 'all') {
+                  this.links.sites = data.sites
+                } else {
+                  this.links.sites = data.sites.filter(site => site.category.includes(category))
+                }
+                // append to clicked_buttons
+                if (this.clicked_buttons.includes(category)) {
+                  ;
+                } else {
+                  this.clicked_buttons.push(category)
+                }
+              },
+              show_categories() {
+                this.category_visible = !this.category_visible
+              },
+              show_all(){
+                fetch('https://raw.githubusercontent.com/mizphses/links.chuo.club/main/links.json')
+                  .then(response => response.json())
+                  .then(data => {
+                    this.links = data
+                    this.clicked_buttons = []
+                  })
+              }
+            }
+            ,
             template: `
-             <div class="buttons">
-                <button v-for="link in links" class="button" :class="link.category" @click="filter(link.category)">{{ link.category }}</button>
+              <div>カテゴリ選択画面を表示する <button v-on:click="show_categories()">表示/非表示</button></div>
+              <div class="category-buttons" v-if="category_visible">
+                <span v-for="category in links.categories">
+                  <button v-on:click="filter_category(category.name)" class="category-button">
+                    {{ category.description }}
+                  </button>
+                </span>
+                  <button v-on:click="show_all()" class="category-button">
+                    全て
+                  </button>
+              </div>
+              <h3>現在選択されているカテゴリ</h3>
+              <div class="category-buttons">
+                <span v-for="category in clicked_buttons">
+                  <span v-on:click="filter_category(category)" class="category-button">
+                    {{ category }}
+                  </span>
+                </span>
+                <span v-if="clicked_buttons.length === 0">
+                  <span class="category-button">
+                    全て
+                  </span>
+                </span>
               </div>
               <div class="links">
-                <div v-for="link in links" class="link">
+                <div v-for="link in links.sites" class="link">
                   <a :href="link.url" target="_blank" rel="noopener noreferrer">
                     <div class="link-box">
                       <div class="link__title">{{ link.name }}</div>
                       <div class="page">{{ link.url }}</div>
+                      <div class="category-tags-shown-on-link">
+                        <span v-for="category in link.category">
+                          <span class="category-tags-shown-on-link-inside">{{ category }}</span>
+                        </span>
+                      </div>
                       <div class="link__description">{{ link.description }}</div>
+                      <div class="ms-login" v-if="link.category.includes('microsoft')">
+                        <a href="./login-with-m-chuo-u.html">中大Microsoftアカウントでログインするには</p>
+                      </div>
                     </div>
                   </a>
+                </div>
+                <div v-if="this.links.sites === undefined || this.links.sites.length === 0" class="sites-none">
+                  <p class="sites-none-text">該当するサイトはありません。<button v-on:click="show_all()">全てのサイトを表示する</button></p>
                 </div>
               </div>
             `

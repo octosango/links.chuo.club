@@ -132,27 +132,23 @@
     },
     {
       "name": "study",
-      "description": "学習に関するサービス"
+      "description": "学習に使える"
     },
     {
       "name": "google",
-      "description": "Googleのサービス"
+      "description": "作者: Google"
     },
     {
       "name": "microsoft",
-      "description": "Microsoftのサービス"
-    },
-    {
-      "name": "mizphses",
-      "description": "mizphsesのサービス"
+      "description": "作者: Microsoft"
     },
     {
       "name": "email",
-      "description": "メールサービス"
+      "description": "メール"
     },
     {
       "name": "office",
-      "description": "Office"
+      "description": "オフィススイート"
     },
     {
       "name": "g.chuo-u.ac.jp",
@@ -161,6 +157,10 @@
     {
       "name": "m.chuo-u.ac.jp",
       "description": "m.chuo-u.ac.jpのサービス（MSログイン）"
+    },
+    {
+      "name": "mizphses",
+      "description": "作者: mizphses"
     }
   ]
 }

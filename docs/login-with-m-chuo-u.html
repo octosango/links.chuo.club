@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Links</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w==" crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.47/vue.global.min.js" integrity="sha512-DJ2+sosWB5FnZAIeCWAHu2gxQ7Gi438oOZLcBQSOrW8gD0s7LIXDv/5RW76B3FcljF40BXnfqNIo6Dhp7dFHJg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="./main.css">
+  </head>
+  <body>
+    <div class="nav">
+      <h1>Links Portal</h1>
+      <div>
+        <a href="./index.html">ホーム</a>
+        <a href="https://github.com/mizphses/links.chuo.club">GitHub</a>
+      </div>
+    </div>
+    <div class="app">
+      <div>
+        <h2>m.chuo-u.ac.jpログイン</h2>
+        <p>Microsoftアカウントでログインする必要がある場合は，次のようにメールアドレスを読み替える必要があります。</p>
+        <div style="overflow-x: scroll;" >
+          <img src="./google-ms-convert.svg" alt="GoogleアカウントをMicrosoftアカウントに変換するには，g.chuo-u.ac.jpをm.chuo-u.ac.jpに変えてください。" height="200px" />
+        </div>
+        <button onclick="return_to_last_page()">前のページに戻る</button>
+      </div>
+    </div>
+    <script>
+      function return_to_last_page() {
+        window.history.back();
+      }
+    </script>
+  </body>
+</html>
