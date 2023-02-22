@@ -100,6 +100,18 @@
       ]
     },
     {
+      "name": "Zoom",
+      "url": "https://chuo-u-ac-jp.zoom.us/",
+      "description": "WEB会議で使用できます。",
+      "category": [
+        "zoom-us",
+        "tougou-account",
+        "sso",
+        "web-mtg",
+        "study"
+      ]
+    },
+    {
       "name": "Links",
       "url": "https://links.chuo.club/",
       "description": "このサイトです。中大生のためのリンク集です。中大生が利用できる，学生生活で便利なリンクとかを載せてます。一部は使い方も載せてます。",
@@ -131,6 +143,10 @@
       "description": "大学の情報"
     },
     {
+      "name": "web-mtg",
+      "description": "WEB会議"
+    },
+    {
       "name": "study",
       "description": "学習に使える"
     },
@@ -141,6 +157,10 @@
     {
       "name": "microsoft",
       "description": "作者: Microsoft"
+    },
+    {
+      "name": "zoom-us",
+      "description": "作者: zoom.us"
     },
     {
       "name": "email",
