@@ -112,6 +112,42 @@
       ]
     },
     {
+      "name": "Temico",
+      "url": "https://sites.google.com/view/chuolaw/index",
+      "description": "法学部の学内向け情報サイトです。",
+      "category": [
+        "university",
+        "no-login",
+        "study",
+        "info",
+        "f-law"
+      ]
+    },
+    {
+      "name": "One Commerce",
+      "url": "https://sites.google.com/view/chuocommerce/index",
+      "description": "商学部の学内向け情報サイトです。",
+      "category": [
+        "university",
+        "no-login",
+        "study",
+        "info",
+        "f-commerce"
+      ]
+    },
+    {
+      "name": "時間割サイト",
+      "url": "https://sites.google.com/view/chuoecon-timetable/%E3%83%88%E3%83%83%E3%83%97%E3%83%9A%E3%83%BC%E3%82%B8",
+      "description": "経済学部の教室情報・時間割・その他お知らせに使われるサイトです。",
+      "category": [
+        "university",
+        "no-login",
+        "study",
+        "info",
+        "f-economics"
+      ]
+    },
+    {
       "name": "Links",
       "url": "https://links.chuo.club/",
       "description": "このサイトです。中大生のためのリンク集です。中大生が利用できる，学生生活で便利なリンクとかを載せてます。一部は使い方も載せてます。",
@@ -161,6 +197,18 @@
     {
       "name": "zoom-us",
       "description": "作者: zoom.us"
+    },
+    {
+      "name": "f-law",
+      "description": "法学部向け"
+    },
+    {
+      "name": "f-commerce",
+      "description": "商学部向け"
+    },
+    {
+      "name": "f-economics",
+      "description": "経済学部向け"
     },
     {
       "name": "email",
