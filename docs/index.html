@@ -57,45 +57,35 @@
             },
             methods: {
               filter_category(category) {
-                if (new Set(this.clicked_buttons).has(category)) {
+                if (category === 'clear') {
+                  this.clicked_buttons = []
+                  this.links = structuredClone(json)
+                  return
+                }
+                if (this.is_clicked(category)) {
                   (this.clicked_buttons).splice((this.clicked_buttons).indexOf(category), 1);
-                  console.log('delete: ', this.clicked_buttons)
                 } else {
                   this.clicked_buttons.push(category)
-                  console.log('push: ', this.clicked_buttons)
                 }
-                if (category === 'all') {
-                  //ここ呼び出されない
-                  this.reflesh_links()
-                } else {
-                  this.links.sites = structuredClone(json).sites.filter(site =>
-                    this.clicked_buttons.every(btn => new Set(site.category).has(btn))
-                  )
-                }
+                this.links.sites = structuredClone(json).sites.filter(site =>
+                  this.clicked_buttons.every(btn => new Set(site.category).has(btn)))
               },
               show_categories() {
                 this.category_visible = !this.category_visible
               },
-              show_all(){
-                location.reload()
-              },
-              reflesh_links(){
-                this.links = structuredClone(json)
-              },
               is_clicked(category_name){
-                return this.clicked_buttons.includes(category_name)
+                return new Set(this.clicked_buttons).has(category_name)
               }
-            }
-            ,
+            },
             template: `
               <div>カテゴリ選択画面を表示する <button v-on:click="show_categories()">表示/非表示</button></div>
               <div class="category-buttons" v-if="category_visible">
                 <span v-for="category in links.categories">
-                  <button v-on:click="filter_category(category.name)" class="category-button"  v-bind:class="{'clicked-button':is_clicked(category.name)}">
+                  <button v-on:click="filter_category(category.name)" class="category-button" :class="{'clicked-button':is_clicked(category.name)}">
                     {{ category.description }}
                   </button>
                 </span>
-                  <button v-on:click="show_all()" class="category-button">
+                  <button v-on:click="filter_category('clear')" class="category-button">
                     全て
                   </button>
               </div>
@@ -131,7 +121,7 @@
                   </a>
                 </div>
                 <div v-if="this.links.sites === undefined || this.links.sites.length === 0" class="sites-none">
-                  <p class="sites-none-text">該当するサイトはありません。<button v-on:click="show_all()">全てのサイトを表示する</button></p>
+                  <p class="sites-none-text">該当するサイトはありません。<button v-on:click="filter_category('clear')">全てのサイトを表示する</button></p>
                 </div>
               </div>
             `
