@@ -34,100 +34,10 @@
         <a href="https://github.com/mizphses/links.chuo.club">GitHub</a>
       </div>
     </div>
-    <div class="app">
-      <div>
-        <h2>このサイトについて</h2>
-        <p>このサイトはmizphsesが選んだ，とりあえずブックマークしておいた方がいい大学のサイト一覧です。</p>
-        <p>ページの追加は<a href="https://github.com/mizphses/links.chuo.club/issues/new/choose">こちら</a>からご申請ください。お問い合わせも同様にお願いいたします。</p>
-      </div>
-      <div id="app">
+      <div class="app">
+        <div id="app">
       </div>
     </div>
-    <script>
-      fetch('https://raw.githubusercontent.com/mizphses/links.chuo.club/main/links.json')
-        .then(response => response.json())
-        .then(data => {
-          const app = Vue.createApp({
-            data() {
-              return {
-                links: data,
-                clicked_buttons: [],
-                category_visible: false,
-              }
-            },
-            methods: {
-              filter_category(category) {
-                if (category === 'all') {
-                  this.links.sites = data.sites
-                } else {
-                  this.links.sites = data.sites.filter(site => site.category.includes(category))
-                }
-                // append to clicked_buttons
-                if (this.clicked_buttons.includes(category)) {
-                  ;
-                } else {
-                  this.clicked_buttons.push(category)
-                }
-              },
-              show_categories() {
-                this.category_visible = !this.category_visible
-              },
-              show_all(){
-                location.reload()
-              }
-            }
-            ,
-            template: `
-              <div>カテゴリ選択画面を表示する <button v-on:click="show_categories()">表示/非表示</button></div>
-              <div class="category-buttons" v-if="category_visible">
-                <span v-for="category in links.categories">
-                  <button v-on:click="filter_category(category.name)" class="category-button">
-                    {{ category.description }}
-                  </button>
-                </span>
-                  <button v-on:click="show_all()" class="category-button">
-                    全て
-                  </button>
-              </div>
-              <h3>現在選択されているカテゴリ</h3>
-              <div class="category-buttons">
-                <span v-for="category in clicked_buttons">
-                  <span v-on:click="filter_category(category)" class="category-button">
-                    {{ category }}
-                  </span>
-                </span>
-                <span v-if="clicked_buttons.length === 0">
-                  <span class="category-button">
-                    全て
-                  </span>
-                </span>
-              </div>
-              <div class="links">
-                <div v-for="link in links.sites" class="link">
-                  <a :href="link.url" target="_blank" rel="noopener noreferrer">
-                    <div class="link-box">
-                      <div class="link__title">{{ link.name }}</div>
-                      <div class="page">{{ link.url }}</div>
-                      <div class="category-tags-shown-on-link">
-                        <span v-for="category in link.category">
-                          <span class="category-tags-shown-on-link-inside">{{ category }}</span>
-                        </span>
-                      </div>
-                      <div class="link__description">{{ link.description }}</div>
-                      <div class="ms-login" v-if="link.category.includes('microsoft')">
-                        <a href="./login-with-m-chuo-u.html">中大Microsoftアカウントでログインするには</p>
-                      </div>
-                    </div>
-                  </a>
-                </div>
-                <div v-if="this.links.sites === undefined || this.links.sites.length === 0" class="sites-none">
-                  <p class="sites-none-text">該当するサイトはありません。<button v-on:click="show_all()">全てのサイトを表示する</button></p>
-                </div>
-              </div>
-            `
-          })
-          app.mount('#app')
-        })
-    </script>
+    <script src="./bundle.js"></script>
   </body>
 </html>

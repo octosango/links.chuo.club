@@ -113,7 +113,7 @@ a{
     margin: 1rem 0;
 }
 
-.category-button:hover, .category-button:focus, .button-active {
+.category-button:hover, .category-button:focus, .button-active, .category-button.clicked-button {
     background-color: #d5ff8d;
 }
 
