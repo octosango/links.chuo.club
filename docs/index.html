@@ -64,20 +64,13 @@
                   this.clicked_buttons.push(category)
                   console.log('push: ', this.clicked_buttons)
                 }
-                if (category === 'clear') {
+                if (category === 'all') {
+                  //ここ呼び出されない
                   this.reflesh_links()
                 } else {
-                  console.log('filter-mae: ', this.clicked_buttons)
-                  structuredClone(json).sites.forEach(function(site){
-                    const repeatable_list = (site.category).concat(this.clicked_buttons)
-                    console.log(new Set(repeatable_list).size < repeatable_list.length);
-                  },this)
-
-                  this.links.sites = structuredClone(json).sites.filter(function(site){
-                    const repeatable_list = (site.category).concat(this.clicked_buttons)
-                    return new Set(repeatable_list).size < repeatable_list.length
-                  },this)
-                  console.log('filter-ato: ', this.clicked_buttons)
+                  this.links.sites = structuredClone(json).sites.filter(site =>
+                    this.clicked_buttons.every(btn => new Set(site.category).has(btn))
+                  )
                 }
               },
               show_categories() {
