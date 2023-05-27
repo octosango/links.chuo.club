@@ -2,6 +2,20 @@
 
 このレポジトリはブクマするべきリンクたちをまとめたものです。
 
+## 追加機能: あなたが [GitHub Gist](https://gist.github.com/) にアップロードした`links.json`を表示する
+
+- 以下のjsonを表示したいとします
+- https://gist.github.com/octosango/b70285fbb8ef1f09562f16959002e649
+- まず「Raw」ボタンをクリックします。遷移したページのURLをコピーします。
+- `https://gist.githubusercontent.com/octosango/b70285fbb8ef1f09562f16959002e649/raw/ba112f33a3828ca86427becabb8165a81c4a24bf/links.json`
+- ホスト名を削除し、バージョンの部分を削除します。（バージョンの部分は削除せずとも動く）
+- `/octosango/b70285fbb8ef1f09562f16959002e649/raw/links.json`
+- できあがった文字列をページのURLに`#`を挟んでくっつけます
+- `https://octosango.github.io/links.chuo.club/` + `#` + `/octosango/b70285fbb8ef1f09562f16959002e649/raw/links.json`
+- https://octosango.github.io/links.chuo.club/#/octosango/b70285fbb8ef1f09562f16959002e649/raw/links.json
+- アクセスする。`manabanana`と表示があれば正常に動作しています。
+
+
 ## 管理者
 Fuminori Ogawa<mizphses@gmail.com>
 
