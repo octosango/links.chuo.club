@@ -57,18 +57,27 @@
             },
             methods: {
               filter_category(category) {
+                if (new Set(this.clicked_buttons).has(category)) {
+                  (this.clicked_buttons).splice((this.clicked_buttons).indexOf(category), 1);
+                  console.log('delete: ', this.clicked_buttons)
+                } else {
+                  this.clicked_buttons.push(category)
+                  console.log('push: ', this.clicked_buttons)
+                }
                 if (category === 'clear') {
                   this.reflesh_links()
                 } else {
-                  this.links.sites = structuredClone(json).sites.filter(
-                    site => site.category.includes(category)
-                  )
-                }
-                // append to clicked_buttons
-                if (this.clicked_buttons.includes(category)) {
-                  ;
-                } else {
-                  this.clicked_buttons.push(category)
+                  console.log('filter-mae: ', this.clicked_buttons)
+                  structuredClone(json).sites.forEach(function(site){
+                    const repeatable_list = (site.category).concat(this.clicked_buttons)
+                    console.log(new Set(repeatable_list).size < repeatable_list.length);
+                  },this)
+
+                  this.links.sites = structuredClone(json).sites.filter(function(site){
+                    const repeatable_list = (site.category).concat(this.clicked_buttons)
+                    return new Set(repeatable_list).size < repeatable_list.length
+                  },this)
+                  console.log('filter-ato: ', this.clicked_buttons)
                 }
               },
               show_categories() {
@@ -79,6 +88,9 @@
               },
               reflesh_links(){
                 this.links = structuredClone(json)
+              },
+              is_clicked(category_name){
+                return this.clicked_buttons.includes(category_name)
               }
             }
             ,
@@ -86,7 +98,7 @@
               <div>カテゴリ選択画面を表示する <button v-on:click="show_categories()">表示/非表示</button></div>
               <div class="category-buttons" v-if="category_visible">
                 <span v-for="category in links.categories">
-                  <button v-on:click="filter_category(category.name)" class="category-button">
+                  <button v-on:click="filter_category(category.name)" class="category-button"  v-bind:class="{'clicked-button':is_clicked(category.name)}">
                     {{ category.description }}
                   </button>
                 </span>
