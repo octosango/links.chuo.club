@@ -1,9 +1,19 @@
+const NotFoundComponent = { template: '<p>Page not found</p>' }
+const AboutComponent = { template: '<p>About page</p>' }
+const HeaderComponent = {
+  template: `
+  <header>
+    <h1>タイトルです</h1>
+  </header>
+  `
+}
 const MainComponent = {
   data() {
     return {
     links: structuredClone(json),
     clicked_buttons: [],
     category_visible: false,
+    user: json_user,
     }
   },
   methods: {
@@ -31,8 +41,13 @@ const MainComponent = {
   template: `
   <div>
     <h2>このサイトについて</h2>
-    <p>このサイトはmizphsesが選んだ，とりあえずブックマークしておいた方がいい大学のサイト一覧です。</p>
-    <p>ページの追加は<a href="https://github.com/mizphses/links.chuo.club/issues/new/choose">こちら</a>からご申請ください。お問い合わせも同様にお願いいたします。</p>
+    <p>
+      このサイトは
+      <a v-if="user" :href="user.html_url">{{ user.login }}</a>
+      <a v-else href="https://github.com/mizphses">mizphses</a>
+      が選んだ，とりあえずブックマークしておいた方がいい大学のサイト一覧です。
+    </p>
+    <p v-if="!user">ページの追加は<a href="https://github.com/mizphses/links.chuo.club/issues/new/choose">こちら</a>からご申請ください。お問い合わせも同様にお願いいたします。</p>
   </div>
   <div>カテゴリ選択画面を表示する <button v-on:click="show_categories()">表示/非表示</button></div>
   <div class="category-buttons" v-if="category_visible">
@@ -83,15 +98,70 @@ const MainComponent = {
   `
 }
 
-let json = null
-fetch('https://raw.githubusercontent.com/mizphses/links.chuo.club/main/links.json')
-  .then(response => response.json())
-  .then(jsons => {
-    json = jsons
-    if (!json.categories) {
-    json.categories = (Array.from(new Set(json.sites.map(site => site.category).flat())))
-      .map(name => ({"name": name, "description": name}))
+const routes = {
+  // '': MainComponent,
+  // '#/': HomeComponent,
+  '#/': MainComponent,
+  '#/about': AboutComponent
+  // これ拡張性捨てていいなら、いらないのでは
+}
+
+const SimpleRouter = {
+  data() {
+    return {
+      // currentRoute: window.location.pathname
+      // ここ冗長なのはいいけれど、強引なのは直したい
+      // fetchの段階でjsonではないファイルは弾かれている。ここらへんで判断するなら中身の正規性か
+      // 不正規のjsonでもページ自体は表示されるが、カテゴリもカードもない。エラー画面に飛ばしたい
+      // githubユーザ名は表示されるので、最低限の動作はすると捉える
+      // url生成ページ作りたいよね。ちなmicrosoft解説ページは正常に動作している
+      currentRoute: '#/',
+      data: json,
     }
-    const app = Vue.createApp(MainComponent)
-    app.mount('#app')
-  })
+  },
+
+  computed: {
+    CurrentComponent() {
+      // ここで構造が正規か判定するのが良さそう
+      return routes[this.currentRoute] || NotFoundComponent
+    }
+  },
+
+  // components: {
+  //   'header-component-nyan': HeaderComponent
+  // },
+
+  render() {
+    return Vue.h(this.CurrentComponent)
+  }
+}
+
+
+const flagment = window.location.hash
+let url = 'https://raw.githubusercontent.com/mizphses/links.chuo.club/main/links.json'
+let path = ''
+let json = null
+let json_user = null
+
+if (flagment.match(/^\#[/-\w]+\.json$/i)) {
+  path = flagment.slice(1)
+  url = `https://gist.githubusercontent.com${path}`
+}
+
+async function main () {
+  const response = await fetch(url)
+  json = await response.json()
+
+  if (path) {
+    const user = path.match(/^\/([-\w\.]+?)\//i)[1]
+    url = `https://api.github.com/users/${user}`
+    const response = await fetch(url)
+    json_user = await response.json()
+  }
+
+  const app = await Vue.createApp(SimpleRouter)
+  app.component('header-component-nyan', HeaderComponent)
+  app.mount('#app');
+}
+
+main()
