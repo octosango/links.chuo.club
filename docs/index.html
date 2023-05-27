@@ -46,21 +46,23 @@
     <script>
       fetch('https://raw.githubusercontent.com/mizphses/links.chuo.club/main/links.json')
         .then(response => response.json())
-        .then(data => {
+        .then(json => {
           const app = Vue.createApp({
             data() {
               return {
-                links: data,
+                links: structuredClone(json),
                 clicked_buttons: [],
                 category_visible: false,
               }
             },
             methods: {
               filter_category(category) {
-                if (category === 'all') {
-                  this.links.sites = data.sites
+                if (category === 'clear') {
+                  this.reflesh_links()
                 } else {
-                  this.links.sites = data.sites.filter(site => site.category.includes(category))
+                  this.links.sites = structuredClone(json).sites.filter(
+                    site => site.category.includes(category)
+                  )
                 }
                 // append to clicked_buttons
                 if (this.clicked_buttons.includes(category)) {
@@ -74,6 +76,9 @@
               },
               show_all(){
                 location.reload()
+              },
+              reflesh_links(){
+                this.links = structuredClone(json)
               }
             }
             ,
