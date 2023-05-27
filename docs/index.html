@@ -47,6 +47,10 @@
       fetch('https://raw.githubusercontent.com/mizphses/links.chuo.club/main/links.json')
         .then(response => response.json())
         .then(json => {
+          if (!json.categories) {
+            json.categories = (Array.from(new Set(json.sites.map(site => site.category).flat())))
+              .map(name => ({"name": name, "description": name}))
+          }
           const app = Vue.createApp({
             data() {
               return {
