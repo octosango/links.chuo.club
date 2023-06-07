@@ -1,5 +1,87 @@
+// import axios from 'axios'
+// import increment from "./increment";
+// console.log(increment(3));
+// import { AboutComponent } from './AboutComponent.js'
+
 const NotFoundComponent = { template: '<p>Page not found</p>' }
-const AboutComponent = { template: '<p>About page</p>' }
+const AboutComponent = {
+  data () {
+    return {
+      // gist_url: 'https://gist.githubusercontent.com',
+      gist_url: '',
+      is_url: false,
+      results: '',
+    }
+  },
+  computed: {
+    computedUrl() {
+      this.is_url = false
+      // これグローバルにしてfetchのところでもvalidateするか
+      try { new URL(this.gist_url) }
+      catch { return this.gist_url ? 'invalid url' : 'Paste gist URL up there' }
+      let input_url = new URL(this.gist_url) 
+      let path = ''
+      if (input_url.host == 'gist.github.com') {
+        path = `${input_url.pathname}/raw/`
+      } else if (input_url.host == 'raw.githubusercontent.com') {
+        path = `${input_url.pathname}`
+      } else if (input_url.host == 'gist.githubusercontent.com') {
+        let components = input_url.pathname.split('/')
+        if (components.length == 6) {
+          //octosango/b70285fbb8ef1f09562f16959002e649/raw/ba112f33a3828ca86427becabb8165a81c4a24bf/links.json
+          components.splice(4,1)
+          path = `${components.join('/')}`
+        } else if (components.length == 5 && components[-1].match(/[0-9a-f]{40}/)) {
+          //octosango/b70285fbb8ef1f09562f16959002e649/raw/ba112f33a3828ca86427becabb8165a81c4a24bf
+          path = `${components.pop().join('/')}`
+        } else {
+          //octosango/b70285fbb8ef1f09562f16959002e649/raw/links.json
+          //octosango/b70285fbb8ef1f09562f16959002e649/raw/
+          // others
+          path = `${input_url.pathname}`
+        }
+      } else {
+        return 'not gist url'
+      }
+      // re turn new URL(`https://octosango.github.io/links.chuo.club/#${path}`)
+      this.is_url = true
+      // checkURL
+      // checkUrl()
+      return `https://octosango.github.io/links.chuo.club/#${path}`
+    }
+  },
+  methods: {
+    checkUrl() {
+      axios
+        .get(computedUrl)
+        .then(res => {
+          this.results = res.data.code == 200 ? res.data.data.fullAddress : res.data.message
+        })
+    }
+  },
+  template: `
+  <section>
+    <h2>Create your own list</h2>
+    <input v-model="gist_url" placeholder="Paste gist URL here">
+    <div v-if="is_url && results">
+      <a :href="computedUrl"> {{ computedUrl }} </a>
+      <p :key="results"> {{ results }} </p>
+    </div>
+    <div v-if="is_url">
+      <button @click="checkUrl()">Check URL</button>
+      <br>
+      <a :href="computedUrl"> {{ computedUrl }} </a>
+    </div>
+    <div v-else> {{ computedUrl }} </div>
+    <p>form -- copy - open</p>
+    <p>1. create json, 2. copy url, 3. peste it on form, 4. done</p>
+  </section>
+  <section>
+    <h2>About this site</h2>
+    <p>Created by mizpheses, Forked by octosango</p>
+  </section>
+  `
+}
 const HeaderComponent = {
   template: `
   <header>
@@ -99,23 +181,14 @@ const MainComponent = {
 }
 
 const routes = {
-  // '': MainComponent,
-  // '#/': HomeComponent,
   '#/': MainComponent,
-  '#/about': AboutComponent
-  // これ拡張性捨てていいなら、いらないのでは
+  '#/about': AboutComponent,
 }
 
 const SimpleRouter = {
   data() {
     return {
-      // currentRoute: window.location.pathname
-      // ここ冗長なのはいいけれど、強引なのは直したい
-      // fetchの段階でjsonではないファイルは弾かれている。ここらへんで判断するなら中身の正規性か
-      // 不正規のjsonでもページ自体は表示されるが、カテゴリもカードもない。エラー画面に飛ばしたい
-      // githubユーザ名は表示されるので、最低限の動作はすると捉える
-      // url生成ページ作りたいよね。ちなmicrosoft解説ページは正常に動作している
-      currentRoute: '#/',
+      currentRoute: window.location.hash || '#/',
       data: json,
     }
   },
@@ -127,25 +200,30 @@ const SimpleRouter = {
     }
   },
 
-  // components: {
-  //   'header-component-nyan': HeaderComponent
-  // },
+  components: {
+    // 'header-component-nyan': HeaderComponent
+  },
 
   render() {
     return Vue.h(this.CurrentComponent)
   }
 }
 
+function urlValidation(url, ) {
+  return url, is_url
+}
+
 
 const flagment = window.location.hash
-let url = 'https://raw.githubusercontent.com/mizphses/links.chuo.club/main/links.json'
+let url = new URL('https://raw.githubusercontent.com/mizphses/links.chuo.club/main/links.json')
 let path = ''
 let json = null
 let json_user = null
 
 if (flagment.match(/^\#[/-\w]+\.json$/i)) {
+  // rawまででjsonが表示されることがあるため不十分
   path = flagment.slice(1)
-  url = `https://gist.githubusercontent.com${path}`
+  url = new URL(`https://gist.githubusercontent.com${path}`)
 }
 
 async function main () {
@@ -154,7 +232,7 @@ async function main () {
 
   if (path) {
     const user = path.match(/^\/([-\w\.]+?)\//i)[1]
-    url = `https://api.github.com/users/${user}`
+    url = new URL(`https://api.github.com/users/${user}`)
     const response = await fetch(url)
     json_user = await response.json()
   }
