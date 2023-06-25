@@ -297,15 +297,15 @@ if (flagment.match(/^\#\/(about|create)/i)) {
   ;
 } else if (flagment.match(/^\#[\./-\w]+$/i)) {
   path = flagment.slice(1)
-  // url = new URL(`https://gist.githubusercontent.com${path}`)
-  urlTemp = new URL(`https://gist.githubusercontent.com${path}`)
-  checkValidJson(urlTemp).then(res => {
-    if (res == 1) {
-      url = urlTemp
-    }
-  })
+  url = new URL(`https://gist.githubusercontent.com${path}`)
+  // urlTemp = new URL(`https://gist.githubusercontent.com${path}`)
+  // checkValidJson(urlTemp).then(res => {
+  //   if (res == 1) {
+  //     url = urlTemp
+  //   }
+  // })
 }
-// console.log(url)
+console.log(url)
 
 async function main () {
   const response = await fetch(url)
@@ -322,10 +322,10 @@ async function main () {
   app.component('header-component-nyan', HeaderComponent)
   app.mount('#app');
 
-  window.addEventListener('locationchange', function () {
-    app.refleshCurrntRoute()
-    app.render()
-  });
+  // window.addEventListener('locationchange', function () {
+  //   app.refleshCurrntRoute()
+  //   app.render()
+  // });
 }
 
 
