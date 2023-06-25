@@ -7,78 +7,75 @@ const NotFoundComponent = { template: '<p>Page not found</p>' }
 const AboutComponent = {
   data () {
     return {
-      // gist_url: 'https://gist.githubusercontent.com',
+      input_url: '',
       gist_url: '',
-      is_url: false,
-      results: '',
+      is_gist_url: false,
+      is_valid_json: 0,
+      url_copied: 'Copy URL',
     }
   },
   computed: {
     computedUrl() {
-      this.is_url = false
-      // これグローバルにしてfetchのところでもvalidateするか
-      try { new URL(this.gist_url) }
-      catch { return this.gist_url ? 'invalid url' : 'Paste gist URL up there' }
-      let input_url = new URL(this.gist_url) 
-      let path = ''
-      if (input_url.host == 'gist.github.com') {
-        path = `${input_url.pathname}/raw/`
-      } else if (input_url.host == 'raw.githubusercontent.com') {
-        path = `${input_url.pathname}`
-      } else if (input_url.host == 'gist.githubusercontent.com') {
-        let components = input_url.pathname.split('/')
-        if (components.length == 6) {
-          //octosango/b70285fbb8ef1f09562f16959002e649/raw/ba112f33a3828ca86427becabb8165a81c4a24bf/links.json
-          components.splice(4,1)
-          path = `${components.join('/')}`
-        } else if (components.length == 5 && components[-1].match(/[0-9a-f]{40}/)) {
-          //octosango/b70285fbb8ef1f09562f16959002e649/raw/ba112f33a3828ca86427becabb8165a81c4a24bf
-          path = `${components.pop().join('/')}`
-        } else {
-          //octosango/b70285fbb8ef1f09562f16959002e649/raw/links.json
-          //octosango/b70285fbb8ef1f09562f16959002e649/raw/
-          // others
-          path = `${input_url.pathname}`
-        }
-      } else {
-        return 'not gist url'
+      let message
+      // returns = checkGistURL(this.input_url)
+      [this.gist_url, message, this.is_gist_url] = checkGistURL(this.input_url)
+      // return this.input_url ? (this.gist_url || message) : ''
+      return message
+    },
+    is_not_new_url() {
+      if (!this.is_gist_url) {
+        this.is_valid_json = 0
+        this.url_copied = 'Copy URL'
+        return false
       }
-      // re turn new URL(`https://octosango.github.io/links.chuo.club/#${path}`)
-      this.is_url = true
-      // checkURL
-      // checkUrl()
-      return `https://octosango.github.io/links.chuo.club/#${path}`
+      return true
     }
   },
   methods: {
-    checkUrl() {
-      axios
-        .get(computedUrl)
-        .then(res => {
-          this.results = res.data.code == 200 ? res.data.data.fullAddress : res.data.message
-        })
+    checkJson() {
+      if (this.input_url) {
+        let result = checkValidJson(this.input_url)
+        result.then(res => this.is_valid_json = res)
+      }
+    },
+    copyUrl() {
+      navigator.clipboard.writeText(this.gist_url)
+      this.url_copied = 'Copied ✅'
     }
   },
   template: `
   <section>
     <h2>Create your own list</h2>
-    <input v-model="gist_url" placeholder="Paste gist URL here">
-    <div v-if="is_url && results">
-      <a :href="computedUrl"> {{ computedUrl }} </a>
-      <p :key="results"> {{ results }} </p>
+    <div class="line">
+      <input class="gist" v-model="input_url" placeholder="Paste gist URL here">
+      <button @click="checkJson()" class="gist" :disabled="!(this.is_gist_url)"> {{ computedUrl }} </button>
     </div>
-    <div v-if="is_url">
-      <button @click="checkUrl()">Check URL</button>
-      <br>
-      <a :href="computedUrl"> {{ computedUrl }} </a>
+    <div v-if="is_valid_json == 1 && is_not_new_url">
+      <pre><code>{{ gist_url }}</code></pre>
+      <div class="line">
+      <button class="valids" @click="copyUrl()">{{ this.url_copied }}</button>
+      <a class="valids" :href="gist_url"> Open URL </a>
+      </div>
     </div>
-    <div v-else> {{ computedUrl }} </div>
-    <p>form -- copy - open</p>
-    <p>1. create json, 2. copy url, 3. peste it on form, 4. done</p>
+    <div class="line" v-if="is_valid_json == -1">
+      <pre>無効な形式のJsonです</pre>
+    </div>
   </section>
-  <section>
-    <h2>About this site</h2>
-    <p>Created by mizpheses, Forked by octosango</p>
+  <section class="postcontent">
+    <h3>Step.1</h3>
+    <p><a href="https://gist.github.com/octosango/b70285fbb8ef1f09562f16959002e649">Jsonの例</a>を参考に同じようなKeyを持つJsonを作成する。</p>
+    <h3>Step.2</h3>
+    <p><a href="https://gist.github.com">Gist</a>に投稿する。<br/>「Raw」ボタンをクリックし、遷移したページのURLをコピー。</p>
+    <h3>Step.3</h3>
+    <p>上のフォームにURLをコピペする。</p>
+    <h3>Step.4</h3>
+    <p>形式がOKかのチェックを通れば完成</p>
+  </section>
+  <h2>About this site</h2>
+  <section class="postcontent">
+    <p>Created by <a href="https://github.com/mizphses/links.chuo.club">mizpheses</a>, Forked by <a href="https://github.com/octosango/links.chuo.club">octosango</a>.</p>
+    
+    <p>中大に関わるリンクをまとめたサイトである<a href="https://links.chuo.club">CLink</a>をもとに、<a href="https://gist.github.com/">GitHub Gist</a>へ投稿した任意のJsonファイルを表示する機能を追加したサイトです。</p>
   </section>
   `
 }
@@ -181,14 +178,20 @@ const MainComponent = {
 }
 
 const routes = {
-  '#/': MainComponent,
+  '#/main': MainComponent,
   '#/about': AboutComponent,
 }
 
 const SimpleRouter = {
   data() {
+    let route = ''
+    if (window.location.hash == '#/about') {
+      route = '#/about'
+    } else {
+      route = '#/main'
+    }
     return {
-      currentRoute: window.location.hash || '#/',
+      currentRoute: route,
       data: json,
     }
   },
@@ -209,10 +212,54 @@ const SimpleRouter = {
   }
 }
 
-function urlValidation(url, ) {
-  return url, is_url
+
+function checkGistURL(input_text) { // return [url, message, bool]
+  try { new URL(input_text) }
+  catch { return ['', (input_text ? 'invalid url' : 'No input'), false] }
+  let input_url = new URL(input_text) 
+  let path = ''
+  if (input_url.host == 'gist.github.com') {
+    path = `${input_url.pathname}/raw/`
+  } else if (input_url.host == 'raw.githubusercontent.com') {
+    path = `${input_url.pathname}`
+  } else if (input_url.host == 'gist.githubusercontent.com') {
+    let components = input_url.pathname.split('/')
+    if (components.length == 6) {
+      //octosango/b70285fbb8ef1f09562f16959002e649/raw/ba112f33a3828ca86427becabb8165a81c4a24bf/links.json
+      components.splice(4,1)
+      path = `${components.join('/')}`
+    } else if (components.length == 5 && components[-1].match(/[0-9a-f]{40}/)) {
+      //octosango/b70285fbb8ef1f09562f16959002e649/raw/ba112f33a3828ca86427becabb8165a81c4a24bf
+      path = `${components.pop().join('/')}`
+    } else {
+      //octosango/b70285fbb8ef1f09562f16959002e649/raw/links.json
+      //octosango/b70285fbb8ef1f09562f16959002e649/raw/
+      path = `${input_url.pathname}`
+    }
+  } else {
+    return ['', 'not gist url', false]
+  }
+
+  // re turn new URL(`https://octosango.github.io/links.chuo.club/#${path}`)
+  return [`https://octosango.github.io/links.chuo.club/#${path}`, 'チェック', true]
 }
 
+async function checkValidJson(url) {
+  try {
+    const response = await fetch(url)
+    if (response.ok) {
+      const json = await response.json()
+      if (json.hasOwnProperty('sites')) {
+        return +1
+      }
+      return -1
+    } else {
+      return -1
+    }
+  } catch {
+    return -1
+  }
+}
 
 const flagment = window.location.hash
 let url = new URL('https://raw.githubusercontent.com/mizphses/links.chuo.club/main/links.json')
@@ -220,11 +267,21 @@ let path = ''
 let json = null
 let json_user = null
 
-if (flagment.match(/^\#[/-\w]+\.json$/i)) {
-  // rawまででjsonが表示されることがあるため不十分
+// if (flagment.match(/^\#[/-\w]+\.json$/i)) {
+if (flagment.match(/^\#\/(about|create)/i)) {
+  ;
+} else if (flagment.match(/^\#[\./-\w]+$/i)) {
   path = flagment.slice(1)
-  url = new URL(`https://gist.githubusercontent.com${path}`)
+  // url = new URL(`https://gist.githubusercontent.com${path}`)
+  urlTemp = new URL(`https://gist.githubusercontent.com${path}`)
+  checkValidJson(urlTemp).then(res => {
+    if (res == 1) {
+      url = urlTemp
+    }
+  })
 }
+
+console.log(url);
 
 async function main () {
   const response = await fetch(url)
