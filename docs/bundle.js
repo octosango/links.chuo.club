@@ -204,6 +204,12 @@ const SimpleRouter = {
     }
   },
 
+  methods: {
+    refleshCurrntRoute() {
+      this.currentRoute = window.location.hash
+    },
+  },
+
   watch: {
     currentRoute: function() {
       this.currentRoute = window.location.hash
@@ -315,6 +321,11 @@ async function main () {
   const app = await Vue.createApp(SimpleRouter)
   app.component('header-component-nyan', HeaderComponent)
   app.mount('#app');
+
+  window.addEventListener('locationchange', function () {
+    app.refleshCurrntRoute()
+    app.render()
+  });
 }
 
 
