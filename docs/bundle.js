@@ -121,7 +121,7 @@ const MainComponent = {
   <div>
     <h2>このサイトについて</h2>
     <p>
-      このサイトは
+      このページは
       <a v-if="user" :href="user.html_url">{{ user.login }}</a>
       <a v-else href="https://github.com/mizphses">mizphses</a>
       が選んだ，とりあえずブックマークしておいた方がいい大学のサイト一覧です。
@@ -317,7 +317,7 @@ async function main () {
     const response = await fetch(url)
     json_user = await response.json()
   }
-  
+
   if (!json.categories) {
     json.categories = (Array.from(new Set(json.sites.map(site => site.category).flat())))
       .map(name => ({"name": name, "description": name}))
