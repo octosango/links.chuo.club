@@ -1,5 +1,84 @@
+// import axios from 'axios'
+// import increment from "./increment";
+// console.log(increment(3));
+// import { AboutComponent } from './AboutComponent.js'
+
 const NotFoundComponent = { template: '<p>Page not found</p>' }
-const AboutComponent = { template: '<p>About page</p>' }
+const AboutComponent = {
+  data () {
+    return {
+      input_url: '',
+      gist_url: '',
+      is_gist_url: false,
+      is_valid_json: 0,
+      url_copied: 'Copy URL',
+    }
+  },
+  computed: {
+    computedUrl() {
+      let message
+      // returns = checkGistURL(this.input_url)
+      [this.gist_url, message, this.is_gist_url] = checkGistURL(this.input_url)
+      // return this.input_url ? (this.gist_url || message) : ''
+      return message
+    },
+    is_not_new_url() {
+      if (!this.is_gist_url) {
+        this.is_valid_json = 0
+        this.url_copied = 'Copy URL'
+        return false
+      }
+      return true
+    }
+  },
+  methods: {
+    checkJson() {
+      if (this.input_url) {
+        let result = checkValidJson(this.input_url)
+        result.then(res => this.is_valid_json = res)
+      }
+    },
+    copyUrl() {
+      navigator.clipboard.writeText(this.gist_url)
+      this.url_copied = 'Copied ✅'
+    }
+  },
+  template: `
+  <section>
+    <h2>Create your own list</h2>
+    <div class="line">
+      <input class="gist" v-model="input_url" placeholder="Paste gist URL here">
+      <button @click="checkJson()" class="gist" :disabled="!(this.is_gist_url)"> {{ computedUrl }} </button>
+    </div>
+    <div v-if="is_valid_json == 1 && is_not_new_url">
+      <pre><code>{{ gist_url }}</code></pre>
+      <div class="line">
+      <button class="valids" @click="copyUrl()">{{ this.url_copied }}</button>
+      <a class="valids" :href="gist_url"> Open URL </a>
+      </div>
+    </div>
+    <div class="line" v-if="is_valid_json == -1">
+      <pre>無効な形式のJsonです</pre>
+    </div>
+  </section>
+  <section class="postcontent">
+    <h3>Step.1</h3>
+    <p><a href="https://gist.github.com/octosango/b70285fbb8ef1f09562f16959002e649">Jsonの例</a>を参考に同じようなKeyを持つJsonを作成する。</p>
+    <h3>Step.2</h3>
+    <p><a href="https://gist.github.com">Gist</a>に投稿する。<br/>「Raw」ボタンをクリックし、遷移したページのURLをコピー。</p>
+    <h3>Step.3</h3>
+    <p>上のフォームにURLをコピペする。</p>
+    <h3>Step.4</h3>
+    <p>形式がOKかのチェックを通れば完成</p>
+  </section>
+  <h2>About this site</h2>
+  <section class="postcontent">
+    <p>Created by <a href="https://github.com/mizphses/links.chuo.club">mizpheses</a>, Forked by <a href="https://github.com/octosango/links.chuo.club">octosango</a>.</p>
+    
+    <p>中大に関わるリンクをまとめたサイトである<a href="https://links.chuo.club">CLink</a>をもとに、<a href="https://gist.github.com/">GitHub Gist</a>へ投稿した任意のJsonファイルを表示する機能を追加したサイトです。</p>
+  </section>
+  `
+}
 const HeaderComponent = {
   template: `
   <header>
@@ -99,23 +178,20 @@ const MainComponent = {
 }
 
 const routes = {
-  // '': MainComponent,
-  // '#/': HomeComponent,
-  '#/': MainComponent,
-  '#/about': AboutComponent
-  // これ拡張性捨てていいなら、いらないのでは
+  '#/main': MainComponent,
+  '#/about': AboutComponent,
 }
 
 const SimpleRouter = {
   data() {
+    let route = ''
+    if (window.location.hash == '#/about') {
+      route = '#/about'
+    } else {
+      route = '#/main'
+    }
     return {
-      // currentRoute: window.location.pathname
-      // ここ冗長なのはいいけれど、強引なのは直したい
-      // fetchの段階でjsonではないファイルは弾かれている。ここらへんで判断するなら中身の正規性か
-      // 不正規のjsonでもページ自体は表示されるが、カテゴリもカードもない。エラー画面に飛ばしたい
-      // githubユーザ名は表示されるので、最低限の動作はすると捉える
-      // url生成ページ作りたいよね。ちなmicrosoft解説ページは正常に動作している
-      currentRoute: '#/',
+      currentRoute: route,
       data: json,
     }
   },
@@ -127,9 +203,9 @@ const SimpleRouter = {
     }
   },
 
-  // components: {
-  //   'header-component-nyan': HeaderComponent
-  // },
+  components: {
+    // 'header-component-nyan': HeaderComponent
+  },
 
   render() {
     return Vue.h(this.CurrentComponent)
@@ -137,16 +213,75 @@ const SimpleRouter = {
 }
 
 
+function checkGistURL(input_text) { // return [url, message, bool]
+  try { new URL(input_text) }
+  catch { return ['', (input_text ? 'invalid url' : 'No input'), false] }
+  let input_url = new URL(input_text) 
+  let path = ''
+  if (input_url.host == 'gist.github.com') {
+    path = `${input_url.pathname}/raw/`
+  } else if (input_url.host == 'raw.githubusercontent.com') {
+    path = `${input_url.pathname}`
+  } else if (input_url.host == 'gist.githubusercontent.com') {
+    let components = input_url.pathname.split('/')
+    if (components.length == 6) {
+      //octosango/b70285fbb8ef1f09562f16959002e649/raw/ba112f33a3828ca86427becabb8165a81c4a24bf/links.json
+      components.splice(4,1)
+      path = `${components.join('/')}`
+    } else if (components.length == 5 && components[-1].match(/[0-9a-f]{40}/)) {
+      //octosango/b70285fbb8ef1f09562f16959002e649/raw/ba112f33a3828ca86427becabb8165a81c4a24bf
+      path = `${components.pop().join('/')}`
+    } else {
+      //octosango/b70285fbb8ef1f09562f16959002e649/raw/links.json
+      //octosango/b70285fbb8ef1f09562f16959002e649/raw/
+      path = `${input_url.pathname}`
+    }
+  } else {
+    return ['', 'not gist url', false]
+  }
+
+  // re turn new URL(`https://octosango.github.io/links.chuo.club/#${path}`)
+  return [`https://octosango.github.io/links.chuo.club/#${path}`, 'チェック', true]
+}
+
+async function checkValidJson(url) {
+  try {
+    const response = await fetch(url)
+    if (response.ok) {
+      const json = await response.json()
+      if (json.hasOwnProperty('sites')) {
+        return +1
+      }
+      return -1
+    } else {
+      return -1
+    }
+  } catch {
+    return -1
+  }
+}
+
 const flagment = window.location.hash
-let url = 'https://raw.githubusercontent.com/mizphses/links.chuo.club/main/links.json'
+let url = new URL('https://raw.githubusercontent.com/mizphses/links.chuo.club/main/links.json')
 let path = ''
 let json = null
 let json_user = null
 
-if (flagment.match(/^\#[/-\w]+\.json$/i)) {
+// if (flagment.match(/^\#[/-\w]+\.json$/i)) {
+if (flagment.match(/^\#\/(about|create)/i)) {
+  ;
+} else if (flagment.match(/^\#[\./-\w]+$/i)) {
   path = flagment.slice(1)
-  url = `https://gist.githubusercontent.com${path}`
+  // url = new URL(`https://gist.githubusercontent.com${path}`)
+  urlTemp = new URL(`https://gist.githubusercontent.com${path}`)
+  checkValidJson(urlTemp).then(res => {
+    if (res == 1) {
+      url = urlTemp
+    }
+  })
 }
+
+console.log(url);
 
 async function main () {
   const response = await fetch(url)
@@ -154,7 +289,7 @@ async function main () {
 
   if (path) {
     const user = path.match(/^\/([-\w\.]+?)\//i)[1]
-    url = `https://api.github.com/users/${user}`
+    url = new URL(`https://api.github.com/users/${user}`)
     const response = await fetch(url)
     json_user = await response.json()
   }
