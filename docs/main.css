@@ -52,7 +52,7 @@ a:hover {
 .link {
     text-decoration: none;
     color: #333;
-    color: #0366d6;
+    /* color: #0366d6; */
     font-size: 16px;
     font-weight: 500;
     margin: 0 10px;
@@ -64,9 +64,13 @@ a:hover {
     overflow-x: scroll;
 }
 
-a.link:hover{
+div.link:hover {
+    text-decoration: none;
     background-color: #eaffc7;
     box-shadow: 0 0 0 0px rgba(0,0,0,0.3), 0 2px 4px rgba(0,0,0,0.3);
+}
+div.link a:hover {
+    text-decoration: none;
 }
 
 @media (min-width: 1024px) {

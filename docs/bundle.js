@@ -184,14 +184,14 @@ const routes = {
 
 const SimpleRouter = {
   data() {
-    let route = ''
-    if (window.location.hash == '#/about') {
-      route = '#/about'
-    } else {
-      route = '#/main'
-    }
+    // let route = ''
+    // if (window.location.hash == '#/about') {
+    //   route = '#/about'
+    // } else {
+    //   route = '#/main'
+    // }
     return {
-      currentRoute: route,
+      currentRoute: window.location.hash,
       data: json,
     }
   },
@@ -199,7 +199,8 @@ const SimpleRouter = {
   computed: {
     CurrentComponent() {
       // ここで構造が正規か判定するのが良さそう
-      return routes[this.currentRoute] || NotFoundComponent
+      // return routes[this.currentRoute] || NotFoundComponent
+      return routes[this.currentRoute] || MainComponent
     }
   },
 
@@ -208,9 +209,12 @@ const SimpleRouter = {
       let route = ''
       if (window.location.hash == '#/about') {
         route = '#/about'
+      } else if (window.location.hash == '#/') {
+        route = '#/main'
       } else {
         route = '#/main'
       }
+      console.log('url changed');
       this.currentRoute = route
     }
   },
@@ -292,8 +296,7 @@ if (flagment.match(/^\#\/(about|create)/i)) {
     }
   })
 }
-
-console.log(url);
+// console.log(url)
 
 async function main () {
   const response = await fetch(url)
