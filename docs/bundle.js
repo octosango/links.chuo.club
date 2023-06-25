@@ -54,7 +54,7 @@ const AboutComponent = {
       <pre><code>{{ gist_url }}</code></pre>
       <div class="line">
       <button class="valids" @click="copyUrl()">{{ this.url_copied }}</button>
-      <a class="valids" :href="gist_url" target="_blank" rel="noreferrer"> Open URL </a>
+      <a class="valids" :href="gist_url"> Open URL </a>
       </div>
     </div>
     <div class="line" v-if="is_valid_json == -1">
@@ -203,6 +203,18 @@ const SimpleRouter = {
     }
   },
 
+  watch: {
+    $route(to) {
+      let route = ''
+      if (window.location.hash == '#/about') {
+        route = '#/about'
+      } else {
+        route = '#/main'
+      }
+      this.currentRoute = route
+    }
+  },
+
   components: {
     // 'header-component-nyan': HeaderComponent
   },
@@ -297,6 +309,8 @@ async function main () {
   const app = await Vue.createApp(SimpleRouter)
   app.component('header-component-nyan', HeaderComponent)
   app.mount('#app');
+
+
 }
 
 main()
