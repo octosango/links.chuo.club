@@ -305,7 +305,7 @@ if (flagment.match(/^\#\/(about|create)/i)) {
   //   }
   // })
 }
-console.log(url)
+// console.log(url)
 
 async function main () {
   const response = await fetch(url)
@@ -316,6 +316,11 @@ async function main () {
     url = new URL(`https://api.github.com/users/${user}`)
     const response = await fetch(url)
     json_user = await response.json()
+  }
+  
+  if (!json.categories) {
+    json.categories = (Array.from(new Set(json.sites.map(site => site.category).flat())))
+      .map(name => ({"name": name, "description": name}))
   }
 
   const app = await Vue.createApp(SimpleRouter)
