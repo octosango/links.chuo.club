@@ -54,7 +54,7 @@ const AboutComponent = {
       <pre><code>{{ gist_url }}</code></pre>
       <div class="line">
       <button class="valids" @click="copyUrl()">{{ this.url_copied }}</button>
-      <a class="valids" :href="gist_url"> Open URL </a>
+      <a class="valids" :href="gist_url" target="_blank" rel="noreferrer"> Open URL </a>
       </div>
     </div>
     <div class="line" v-if="is_valid_json == -1">
@@ -157,15 +157,15 @@ const MainComponent = {
       <a :href="link.url" target="_blank" rel="noopener noreferrer">
         <div class="link-box">
           <div class="link__title">{{ link.name }}</div>
-            <div class="page">{{ link.url }}</div>
-            <div class="category-tags-shown-on-link">
-              <span v-for="category in link.category">
-                <span class="category-tags-shown-on-link-inside">{{ category }}</span>
-              </span>
-            </div>
+          <div class="page">{{ link.url }}</div>
+          <div class="category-tags-shown-on-link">
+            <span v-for="category in link.category">
+              <span class="category-tags-shown-on-link-inside">{{ category }}</span>
+            </span>
+          </div>
           <div class="link__description">{{ link.description }}</div>
           <div class="ms-login" v-if="link.category.includes('microsoft')">
-            <a href="./login-with-m-chuo-u.html">中大Microsoftアカウントでログインするには</p>
+            <a href="./login-with-m-chuo-u.html">中大Microsoftアカウントでログインするには</a>
           </div>
         </div>
       </a>
@@ -205,7 +205,7 @@ const SimpleRouter = {
   },
 
   watch: {
-    $route(to) {
+    $route(to, from) {
       let route = ''
       if (window.location.hash == '#/about') {
         route = '#/about'
@@ -214,7 +214,7 @@ const SimpleRouter = {
       } else {
         route = '#/main'
       }
-      console.log('url changed');
+      console.log(to);
       this.currentRoute = route
     }
   },
