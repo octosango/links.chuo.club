@@ -54,7 +54,7 @@ const AboutComponent = {
       <pre><code>{{ gist_url }}</code></pre>
       <div class="line">
       <button class="valids" @click="copyUrl()">{{ this.url_copied }}</button>
-      <a class="valids" :href="gist_url"> Open URL </a>
+      <a class="valids" :href="gist_url" target="_blank" rel="noreferrer"> Open URL </a>
       </div>
     </div>
     <div class="line" v-if="is_valid_json == -1">
