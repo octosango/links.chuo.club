@@ -205,18 +205,21 @@ const SimpleRouter = {
   },
 
   watch: {
-    $route(to, from) {
-      let route = ''
-      if (window.location.hash == '#/about') {
-        route = '#/about'
-      } else if (window.location.hash == '#/') {
-        route = '#/main'
-      } else {
-        route = '#/main'
-      }
-      console.log(to);
-      this.currentRoute = route
+    currentRoute: function() {
+      this.currentRoute = window.location.hash
     }
+    // $route(to, from) {
+    //   let route = ''
+    //   if (window.location.hash == '#/about') {
+    //     route = '#/about'
+    //   } else if (window.location.hash == '#/') {
+    //     route = '#/main'
+    //   } else {
+    //     route = '#/main'
+    //   }
+    //   console.log(to);
+    //   this.currentRoute = route
+    // }
   },
 
   components: {
@@ -312,8 +315,7 @@ async function main () {
   const app = await Vue.createApp(SimpleRouter)
   app.component('header-component-nyan', HeaderComponent)
   app.mount('#app');
-
-
 }
+
 
 main()
